@@ -44,6 +44,15 @@
     opacity:1;
   }
 </style>
+  <script>
+    function updateFavicon(url){
+      const link = document.querySelector("link[rel='icon']") || document.createElement('link');
+      link.rel = 'icon';
+      link.type = 'image/png';
+      link.href = url;
+      document.head.appendChild(link);
+    }
+  </script>
 </head>
 <body>
 
