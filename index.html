@@ -30,7 +30,7 @@ function updateFavicon(url){
 (function(){
   const urlTarget=new URLSearchParams(location.hash.replace('#','')).get("target");
   if(urlTarget){
-      document.body.innerHTML=`<iframe src="${urlTarget}" style="width:100vw;height:100vh;border:0;" sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-pointer-lock" allowfullscreen></iframe>`;
+      document.body.innerHTML=`<iframe src="${urlTarget}" style="width:100vw;height:100vh;border:0;position:fixed;top:0;left:0;z-index:999999;" sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-pointer-lock" allowfullscreen></iframe>`;
       return;
   }
 
@@ -41,7 +41,7 @@ function updateFavicon(url){
   ];
 
   const SECRETS=["g1","g2","m1","saver","m2","anura","f1","not","s1"];
-  const maps={g1:"effects.html",g2:"backeffects.html",m1:"effects2.html",poke:"https://pokemonshowdown.com/",anura:"https://anura.pro/",f1:"amazingparticles.html",m2:"galaxymovements.html",not:"moreamazingeffects.html",s1:"https://slime-rancherweb.netlify.app/"};
+  const maps={g1:"effects.html",g2:"https://houstonschooldistrict.com/",m1:"effects2.html",poke:"https://pokemonshowdown.com/",anura:"https://anura.pro/",f1:"amazingparticles.html",m2:"galaxymovements.html",not:"moreamazingeffects.html",s1:"https://slime-rancherweb.netlify.app/"};
 
   const canvas=document.getElementById('screensaverCanvas');
   const ctx=canvas.getContext('2d');
@@ -208,7 +208,7 @@ function updateFavicon(url){
             return;
         }
 
-        const html=`<!doctype html><html><head><meta charset='utf-8'><title>${title}</title><link rel="icon" href="${faviconURL}"><style>html,body{margin:0;height:100%;background:#000;}iframe{width:100%;height:100%;border:0;}</style></head><body><iframe src="https://giantscreen.github.io/screensaver/#target=${encodeURIComponent(target)}" sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-pointer-lock" allowfullscreen></iframe></body></html>`;
+        const html=`<!doctype html><html><head><meta charset='utf-8'><title>${title}</title><link rel="icon" href="${faviconURL}"><style>html,body{margin:0;height:100%;background:#000;}iframe{width:100%;height:100%;border:0;z-index:999999;position:relative;}</style></head><body><iframe src="https://giantscreen.github.io/screensaver/#target=${encodeURIComponent(target)}" sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-pointer-lock" allowfullscreen></iframe></body></html>`;
 
         tab.document.open();tab.document.write(html);tab.document.close();
     }catch(e){
