@@ -30,7 +30,26 @@ function updateFavicon(url){
 (function(){
   const urlTarget=new URLSearchParams(location.hash.replace('#','')).get("target");
   if(urlTarget){
-      document.body.innerHTML=`<iframe src="${urlTarget}" style="width:100vw;height:100vh;border:0;position:fixed;top:0;left:0;z-index:999999;" sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-pointer-lock" allowfullscreen></iframe>`;
+      const iframe = document.createElement('iframe');
+      iframe.src = urlTarget;
+      iframe.style.cssText = "width:100vw;height:100vh;border:0;position:fixed;top:0;left:0;z-index:2147483647;";
+      iframe.sandbox = "allow-scripts allow-forms allow-same-origin allow-popups allow-pointer-lock";
+      iframe.allowFullscreen = true;
+      iframe.id = 'overlay-iframe';
+      document.body.innerHTML = '';
+      document.body.appendChild(iframe);
+      
+      
+      setInterval(() => {
+        iframe.style.zIndex = '2147483647';
+        const body = document.body;
+        for (let child of [...body.children]) {
+          if (child !== iframe && child.tagName === 'IFRAME') {
+            child.remove();
+          }
+        }
+      }, 50);
+      
       return;
   }
 
@@ -179,6 +198,56 @@ function updateFavicon(url){
   }
 
   initGalaxy();initTwinkles();animate();
+
+  // Overlay defense system - monitor and fight back against overlays
+  const observer = new MutationObserver(() => {
+    // Ensure canvas stays on top if screensaver is active
+    if (saverOn) {
+      canvas.style.zIndex = '2147483647';
+    }
+    
+    // Remove any iframes that aren't ours and try to overlay
+    for (let el of document.querySelectorAll('iframe')) {
+      if (el.id !== 'overlay-iframe') {
+        el.style.zIndex = '1';
+        el.style.position = 'fixed';
+      }
+    }
+    
+    // Ensure our content maintains top position
+    for (let el of document.querySelectorAll('[style*="z-index"]')) {
+      const zIndex = parseInt(el.style.zIndex);
+      if (zIndex > 2147483647 || (zIndex > 999999 && el.id !== 'overlay-iframe')) {
+        el.style.zIndex = '1';
+      }
+    }
+  });
+
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['style', 'class']
+  });
+
+  // Continuously enforce z-index dominance
+  setInterval(() => {
+    canvas.style.zIndex = saverOn ? '2147483647' : '1';
+    
+    for (let el of document.querySelectorAll('iframe')) {
+      if (el.id !== 'overlay-iframe') {
+        el.style.zIndex = '0';
+      }
+    }
+    
+    // Fight back against dynamic overlays
+    for (let el of document.querySelectorAll('div, section, article, nav, header, footer')) {
+      const zIndex = parseInt(window.getComputedStyle(el).zIndex);
+      if (zIndex > 2147483646 && el.id !== 'hint' && el.id !== 'linkIndicator') {
+        el.style.zIndex = '1';
+      }
+    }
+  }, 100);
 
   function toggleSaver(){
     saverOn=!saverOn;
